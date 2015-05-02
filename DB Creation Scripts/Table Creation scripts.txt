@@ -1,0 +1,100 @@
+DROP TABLE fines;
+DROP TABLE book_loans;
+DROP TABLE borrower;
+DROP TABLE book_copies;
+DROP TABLE library_branch;
+DROP TABLE book_authors;
+DROP TABLE book;
+
+CREATE TABLE book 
+( 	book_id varchar(10),
+	title varchar(100),
+	CONSTRAINT pk_book PRIMARY KEY(book_id)	
+
+);
+
+
+CREATE TABLE book_authors
+(
+	book_id varchar(10),
+	author_name varchar(40),
+	fname varchar(20),
+	mname varchar(20),
+	lname varchar(20),
+	CONSTRAINT pk_book_authors PRIMARY KEY(book_id, author_name),
+	CONSTRAINT fk_book_id_book_authors FOREIGN KEY(book_id) REFERENCES book(book_id)
+
+);
+
+CREATE TABLE library_branch
+(
+	branch_id int,
+	branch_name varchar(20),
+	address varchar(70),
+	CONSTRAINT pk_library_branch PRIMARY KEY(branch_id)	
+);
+
+CREATE TABLE book_copies
+(
+	book_id varchar(10),
+	branch_id int,
+	no_of_copies int,
+	CONSTRAINT pk_book_copies PRIMARY KEY(book_id, branch_id),
+	CONSTRAINT fk_book_id_book_copies FOREIGN KEY(book_id) REFERENCES book(book_id),
+	CONSTRAINT fk_branch_id_book_copies FOREIGN KEY(branch_id) REFERENCES library_branch(branch_id)
+);
+
+CREATE TABLE borrower
+(
+	card_no int,
+	fname varchar(15),
+	lname varchar(15),
+	address varchar(50),
+	city varchar(20),
+	state varchar(20),
+  	phone varchar(20),
+	CONSTRAINT pk_borrower PRIMARY KEY(card_no)
+);
+
+
+CREATE TABLE book_loans
+(
+	loan_id int,
+	book_id varchar(10),
+	branch_id int,
+	card_no int,
+	date_out date,
+	due_date date,
+	date_in date,
+	CONSTRAINT pk_book_loans PRIMARY KEY(loan_id),
+	CONSTRAINT fk_book_book_loans FOREIGN KEY(book_id) REFERENCES book(book_id),
+	CONSTRAINT fk_branch_id_book_loans FOREIGN KEY(branch_id) REFERENCES library_branch(branch_id),
+	CONSTRAINT fk_card_no_book_loans FOREIGN KEY(card_no) REFERENCES borrower(card_no)
+);
+
+
+
+CREATE TABLE fines
+(
+	loan_id int,
+	fine_amt decimal(4,2),
+	paid boolean DEFAULT FALSE,
+	CONSTRAINT pk_fines PRIMARY KEY(loan_id),
+	CONSTRAINT fk_book_loans_fines FOREIGN KEY(loan_id) REFERENCES book_loans(loan_id)
+
+);
+
+
+#ALTER Statements
+#----------------
+
+
+ALTER TABLE book_copies ADD COLUMN available_copies int;
+
+UPDATE book_copies set available_copies=no_of_copies;
+
+ALTER TABLE borrower ADD COLUMN no_of_books_taken int DEFAULT 0;
+
+
+
+

@@ -1,0 +1,11 @@
+@CHARSET "ISO-8859-1";
+<style>
+h1.header{
+	font-size:40pt;
+	color:red;
+}
+h1.text{
+	font-size:20pt;
+	color:red;
+}
+</style>
